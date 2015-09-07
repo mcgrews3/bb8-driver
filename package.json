@@ -1,0 +1,16 @@
+{
+  "name": "bb8-driver",
+  "version": "1.0.0",
+  "description": "Driver for BB8 by Sphero",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jdmcgrew",
+  "license": "MIT",
+  "dependencies": {
+    "cylon": "^1.1.0",
+    "cylon-ble": "^0.7.1",
+    "node-sphero": "0.0.7"
+  }
+}
