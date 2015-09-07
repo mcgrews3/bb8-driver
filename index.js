@@ -1,4 +1,5 @@
-var uuid = '3d83fa5f2fa943cc811c2907c050f9d0';
+var bb8UUID = '3d83fa5f2fa943cc811c2907c050f9d0';
+var chargeUUID = 'e2822f5b0a4948bcaa16c28b7b1ebade';
 var Cylon = require('cylon');
 var cylonBLE = require('cylon-ble');
 
@@ -39,4 +40,30 @@ function discoverRobots() {
 	}).start();
 }
 
-discoverRobots();
+function readCharacteristics() {
+	Cylon.robot({
+		connections: {
+			bluetooth: {
+				adaptor: "central", uuid: chargeUUID,
+				module: "cylon-ble"
+			}
+		},
+
+		devices: {
+			wiced: {
+				driver: "ble-characteristic",
+				serviceId: "180f", characteristicId: "2a19",
+				connection: "bluetooth"
+			}
+		},
+
+		work: function (my) {
+			my.wiced.readCharacteristic(function (err, data) {
+				if (err) { return console.error("Error: ", err); }
+				console.log("Data: ", data);
+			});
+		}
+	}).start();
+}
+
+readCharacteristics();
