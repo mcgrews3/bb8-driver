@@ -10,4 +10,6 @@
 * [Cylon Ollie](http://cylonjs.com/documentation/platforms/ollie/)
 * [Cylon Sphero](http://cylonjs.com/documentation/drivers/sphero/)
 
-### Other
+### Sphero
+
+* [Sphero.js @ Github](https://github.com/orbotix/sphero.js)
