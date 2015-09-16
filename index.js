@@ -1,8 +1,14 @@
-var bb8UUID = '3d83fa5f2fa943cc811c2907c050f9d0';
-bb8ServiceUUID = '22bb746f2ba075542d6f726568705327';
-var chargeUUID = 'e2822f5b0a4948bcaa16c28b7b1ebade';
+
+//Hiding my GUID's in cause anyone out there is within 30 meters ...
+var data = require('./data.json');
+
+var bb8ServiceUUID = '22bb746f2ba075542d6f726568705327';
+var bb8UUID = data.devices.bb8;
+var chargeUUID = data.devices.charge;
 var Cylon = require('cylon');
 var cylonBLE = require('cylon-ble');
+
+console.log(bb8UUID);
 
 function discoverRobots() {
 	Cylon.robot({
@@ -48,7 +54,8 @@ function readCharacteristic() {
 	Cylon.robot({
 		connections: {
 			bluetooth: {
-				adaptor: "central", uuid: bb8UUID,
+				adaptor: "central", 
+				uuid: bb8UUID,
 				module: "cylon-ble"
 			}
 		},
@@ -56,8 +63,8 @@ function readCharacteristic() {
 		devices: {
 			wiced: {
 				driver: "ble-characteristic",
-				serviceId: bb8ServiceUUID,
-				characteristicId: bb8UUID,
+				serviceId: '22bb746f2bb075542d6f726568705327',
+				characteristicId: '22bb746f2bb075542d6f726568705327',
 				connection: "bluetooth"
 			}
 		},
@@ -130,7 +137,7 @@ function getDeviceInfo() {
 		},
 
 		work: function (my) {
-			console.log(my.deviceInfo);
+			console.log(my);
 			my.deviceInfo.getManufacturerName(function (err, data) {
 				if (err) {
 					console.log("error: ", err);
@@ -178,9 +185,47 @@ function connect() {
 	}).start();
 }
 
+function testOllie() {
+	console.log("testOllie");
+	Cylon.robot({
+		connections: {
+			bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
+		},
+
+		devices: {
+			ollie: { driver: 'ollie' }
+		},
+
+		work: function (my) {
+			console.log("WORK", my)
+			my.ollie.wake(function (err, data) {
+				console.log("wake");
+
+				after(200, function () {
+					my.ollie.setRGB(0x00FFFF);
+				});
+
+				after(500, function () {
+					my.ollie.setRGB(0xFF0000);
+					my.ollie.roll(60, 0, 1);
+
+					after(1000, function () {
+						my.ollie.roll(60, 90, 1);
+
+						after(1000, function () {
+							my.ollie.stop();
+						});
+					});
+				});
+			});
+		}
+	}).start();
+}
+
 //getDeviceInfo();
-//genericAccess();
+genericAccess();
 //readCharacteristic();
 //discoverRobots();
 //roll();
-connect();
+//connect();
+//testOllie();
