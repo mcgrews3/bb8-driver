@@ -54,7 +54,7 @@ function readCharacteristic() {
 	Cylon.robot({
 		connections: {
 			bluetooth: {
-				adaptor: "central", 
+				adaptor: "central",
 				uuid: bb8UUID,
 				module: "cylon-ble"
 			}
@@ -222,10 +222,54 @@ function testOllie() {
 	}).start();
 }
 
+function testBB8() {
+	console.log("testBB8");
+	var Cylon = require('cylon');
+
+	Cylon.robot({
+		connections: {
+			bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
+		},
+
+		devices: {
+			bb8: { driver: 'bb8' }
+		},
+
+		work: function (my) {
+			my.bb8.devModeOn(function (err, data) {
+				console.log("wake");
+
+				after(200, function () {
+					console.log("200ms: set color");
+					my.bb8.setRGB(0x00FFFF);
+				});
+
+				after(500, function () {
+					console.log("200ms: set color and roll")
+					my.bb8.setRGB(0xFF0000);
+					my.bb8.roll(60, 0, 1);
+
+					after(1000, function () {
+						console.log("1000ms: roll")
+						my.bb8.roll(60, 90, 1);
+
+						after(1000, function () {
+							console.log("1000ms: stop")
+							my.bb8.stop();
+						});
+					});
+				});
+			});
+		}
+	}).start();
+}
+
 //getDeviceInfo();
-genericAccess();
+//genericAccess();
 //readCharacteristic();
 //discoverRobots();
 //roll();
 //connect();
 //testOllie();
+
+testBB8();
