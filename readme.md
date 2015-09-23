@@ -27,52 +27,52 @@ peripheral with UUID  found
 
 services and characteristics:
 
-22bb746f2ba075542d6f726568705327 -    //2ba0  ?Robot Control Service
-  22bb746f2ba175542d6f726568705327    //2ba1  ?Roll
+22bb746f 2ba075542d6f7265 68705327 -    //2ba0  ?Robot Control Service
+  22bb746f 2ba175542d6f7265 68705327    //2ba1  ?Roll
     properties  writeWithoutResponse, write
-  22bb746f2ba675542d6f726568705327    //2ba6  ?Notify
+  22bb746f 2ba675542d6f7265 68705327    //2ba6  ?Notify
     properties  notify
 	
 	
-22bb746f2bb075542d6f726568705327 -    //2bb0  ?bb8/sphero
-  22bb746f2bb175542d6f726568705327    //2bb1
+22bb 746f 2bb0 7554 2d6f 7265 6870 5327 -    //2bb0  ?bb8/sphero
+  22bb746f 2bb175542d6f7265 68705327    //2bb1
     properties  read, write
-  22bb746f2bb275542d6f726568705327    //2bb2  ?TXPower
+  22bb746f 2bb275542d6f7265 68705327    //2bb2  ?TXPower
     properties  write
-  22bb746f2bb675542d6f726568705327    //2bb6
+  22bb746f 2bb675542d6f7265 68705327    //2bb6
     properties  read, writeWithoutResponse, write, notify
     value       d1 | 'Q'
-  22bb746f2bb775542d6f726568705327    //2bb7
+  22bb746f 2bb775542d6f7265 68705327    //2bb7
     properties  read, writeWithoutResponse, write
-  22bb746f2bb875542d6f726568705327    //2bb8
+  22bb746f 2bb875542d6f7265 68705327    //2bb8
     properties  read
     value       2c | ','
-  22bb746f2bb975542d6f726568705327    //2bb9
+  22bb746f 2bb975542d6f7265 68705327    //2bb9
     properties  read
     value       0900 | '	'
-  22bb746f2bba75542d6f726568705327    //2bba
+  22bb746f 2bba75542d6f7265 68705327    //2bba
     properties  read
     value       c800 | 'H'
-  22bb746f2bbd75542d6f726568705327    //2bbd  ?AntiDos
+  22bb746f 2bbd75542d6f7265 68705327    //2bbd  ?AntiDos
     properties  writeWithoutResponse, write
-  22bb746f2bbe75542d6f726568705327    //2bbe
+  22bb746f 2bbe75542d6f7265 68705327    //2bbe
     properties  read, write
     value       1e | ''
-  22bb746f2bbf75542d6f726568705327    //2bbf  ?wake
+  22bb746f 2bbf7554 2d6f7265 68705327    //2bbf  ?wake
     properties  read, writeWithoutResponse, write
     value       00 | ''
-  22bb746f3bba75542d6f726568705327    //3bba
+  22bb746f 3bba7554 2d6f7265 68705327    //3bba
     properties  read, writeWithoutResponse, write
     value       0100 | ''
 	
 	
-00001016d10211e19b2300025b00a5a5 -    //16   
-  00001013d10211e19b2300025b00a5a5 -  //13
+0000 1016 d102 11e1 9b23 0002 5b00 a5a5 -     //1016   
+  00001013d10211e19b2300025b00a5a5 -          //1013
     properties  read, write
     value       01 | ''
-  00001017d10211e19b2300025b00a5a5    //17
+  00001017d10211e19b2300025b00a5a5            //1017
     properties  write
-  00001014d10211e19b2300025b00a5a5 -  //14   
+  00001014d10211e19b2300025b00a5a5 -          //1014   
     properties  read, notify
     value        | ''
 	

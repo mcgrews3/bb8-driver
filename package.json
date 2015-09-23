@@ -10,11 +10,12 @@
   "license": "MIT",
   "dependencies": {
     "cylon": "^1.1.0",
+    "cylon-bb8": "git+https://github.com/mcgrews3/cylon-bb8.git",
     "cylon-ble": "^0.7.1",
     "cylon-ollie": "^0.5.0",
-    "cylon-bb8":"git+https://github.com/mcgrews3/cylon-bb8.git",
     "cylon-sphero": "^0.21.0",
     "hybridgroup-spheron": "^0.3.0",
-    "node-sphero": "0.0.7"
+    "node-sphero": "0.0.7",
+    "sphero": "^0.3.0"
   }
 }

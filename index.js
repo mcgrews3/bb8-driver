@@ -1,267 +1,220 @@
-
 //Hiding my GUID's in cause anyone out there is within 30 meters ...
-var data = require('./data.json');
+var datajson = require('./data.json');
+var bb8UUID = datajson.devices.bb8;
 
-var bb8ServiceUUID = '22bb746f2ba075542d6f726568705327';
-var bb8UUID = data.devices.bb8;
-var chargeUUID = data.devices.charge;
-var Cylon = require('cylon');
 var cylonBLE = require('cylon-ble');
-
-console.log(bb8UUID);
+var Cylon = require('cylon');
+Cylon.config({
+    logging: {
+        level: 'debug'
+    }
+});
 
 function discoverRobots() {
-	Cylon.robot({
-		connections: {
-			bluetooth: {
-				adaptor: 'central',
-				module: __dirname + '/node_modules/cylon-ble'
-			}
-		},
+    Cylon.robot({
+        connections: {
+            bluetooth: {
+                adaptor: 'central',
+                module: __dirname + '/node_modules/cylon-ble'
+            }
+        },
 
-		work: function (my) {
-			var peripherals = {};
+        work: function (my) {
+            var peripherals = {};
 
-			my.bluetooth.on("discover", function (peripheral) {
-				peripherals[peripheral.uuid] = peripheral;
-			});
+            my.bluetooth.on("discover", function (peripheral) {
+                peripherals[peripheral.uuid] = peripheral;
+            });
 
-			console.log("Just listening for BLE peripherals, one moment...");
+            console.log("Just listening for BLE peripherals, one moment...");
 
-			every((5).seconds(), function () {
-				console.log("Known Bluetooth Peripherals:");
-				console.log("Name    | UUID                             | RSSI");
-				console.log("------- | -------------------------------- | ----");
+            every((5).seconds(), function () {
+                console.log("Known Bluetooth Peripherals:");
+                console.log("Name    | UUID                             | RSSI");
+                console.log("------- | -------------------------------- | ----");
 
-				for (var uuid in peripherals) {
-					var p = peripherals[uuid];
+                for (var uuid in peripherals) {
+                    var p = peripherals[uuid];
 
-					console.log([
-						p.advertisement.localName,
-						p.uuid,
-						p.rssi
-					].join(" | ") + "\n");
-					console.log(p);
-				}
-			});
-		}
-	}).start();
+                    console.log([
+                            p.advertisement.localName,
+                            p.uuid,
+                            p.rssi
+                        ].join(" | ") + "\n");
+                    console.log(p);
+                }
+            });
+        }
+    }).start();
 }
 
 function readCharacteristic() {
-	var Cylon = require("cylon");
+    Cylon.robot({
+        connections: {
+            bluetooth: {
+                adaptor: "central",
+                uuid: bb8UUID,
+                module: "cylon-ble"
+            }
+        },
 
-	Cylon.robot({
-		connections: {
-			bluetooth: {
-				adaptor: "central",
-				uuid: bb8UUID,
-				module: "cylon-ble"
-			}
-		},
+        devices: {
+            wiced: {
+                driver: "ble-characteristic",
+                serviceId: '22bb746f2bb075542d6f726568705327',
+                characteristicId: '22bb746f2bb075542d6f726568705327',
+                connection: "bluetooth"
+            }
+        },
 
-		devices: {
-			wiced: {
-				driver: "ble-characteristic",
-				serviceId: '22bb746f2bb075542d6f726568705327',
-				characteristicId: '22bb746f2bb075542d6f726568705327',
-				connection: "bluetooth"
-			}
-		},
-
-		work: function (my) {
-			my.wiced.readCharacteristic(function (err, data) {
-				if (err) { return console.error("Error: ", err); }
-				console.log("Data: ", data);
-			});
-		}
-	}).start();
+        work: function (my) {
+            my.wiced.readCharacteristic(function (err, data) {
+                if (err) {
+                    return console.error("Error: ", err);
+                }
+                console.log("Data: ", data);
+            });
+        }
+    }).start();
 }
 
 function genericAccess() {
-	Cylon.robot({
-		connections: {
-			bluetooth: {
-				adaptor: "central",
-				uuid: bb8UUID,
-				module: "cylon-ble"
-			}
-		},
+    Cylon.robot({
+        connections: {
+            bluetooth: {
+                adaptor: "central",
+                uuid: bb8UUID,
+                module: "cylon-ble"
+            }
+        },
 
-		devices: {
-			generic: {
-				driver: "ble-generic-access"
-			}
-		},
+        devices: {
+            generic: {
+                driver: "ble-generic-access"
+            }
+        },
 
-		work: function (my) {
-			console.log(my);
-			my.generic.getDeviceName(function (err, data) {
-				if (err) { return console.error("Error: ", err); }
-				console.log("Name: ", data);
-			});
-		}
-	}).start();
+        work: function (my) {
+            console.log(my);
+            my.generic.getDeviceName(function (err, data) {
+                if (err) {
+                    return console.error("Error: ", err);
+                }
+                console.log("Name: ", data);
+            });
+        }
+    }).start();
 }
 
-function roll() {
-	Cylon.robot({
-		connections: {
-			bluetooth: { adaptor: "central", uuid: bb8UUID, module: "cylon-ble" }
-		},
+function devModeOnBB8() {
+    console.log("devModeOnBB8");
+    Cylon.robot({
+        connections: {
+            bluetooth: {adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble'}
+        },
 
-		devices: {
-			ollie: { driver: "ollie" }
-		},
+        devices: {
+            bb8: {driver: 'bb8'}
+        },
 
-		work: function (my) {
-			my.ollie.wake(function () {
-				every((1).second(), function () {
-					my.ollie.setRGB(Math.floor(Math.random() * 100000));
-				});
-			});
-		}
-	}).start();
-}
-
-function getDeviceInfo() {
-	var Cylon = require("cylon");
-
-	Cylon.robot({
-		connections: {
-			bluetooth: { adaptor: "central", uuid: bb8UUID, module: "cylon-ble" }
-		},
-
-		devices: {
-			deviceInfo: { driver: "ble-device-information" }
-		},
-
-		work: function (my) {
-			console.log(my);
-			my.deviceInfo.getManufacturerName(function (err, data) {
-				if (err) {
-					console.log("error: ", err);
-					return;
-				}
-
-				console.log("data: ", data);
-			});
-		}
-	}).start();
-}
-
-function connect() {
-	Cylon.robot({
-		connections: {
-			bluetooth: { adaptor: "central", module: __dirname + "/node_modules/cylon-ble" }
-		},
-
-		connectBLE: function (peripheral) {
-			if (this.connected) { return; }
-			console.log(peripheral);
-
-			this.bluetooth.connectPeripheral(peripheral.uuid, peripheral, function () {
-				console.log(peripheral.advertisement.localName, peripheral.uuid);
-				this.connected = true;
-				this.device("blething",
-					{ connection: "bluetooth", driver: "ble-device-information" });
-				this.devices.blething.getManufacturerName(function (err, data) {
-					if (err) {
-						console.log("error: ", err);
-						return;
-					}
-					console.log("data: ", data);
-				});
-			}.bind(this));
-		},
-
-		work: function (my) {
-			this.connected = false;
-
-			my.bluetooth.on("discover", function (peripheral) {
-				my.connectBLE(peripheral);
-			});
-		}
-	}).start();
-}
-
-function testOllie() {
-	console.log("testOllie");
-	Cylon.robot({
-		connections: {
-			bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
-		},
-
-		devices: {
-			ollie: { driver: 'ollie' }
-		},
-
-		work: function (my) {
-			console.log("WORK", my)
-			my.ollie.wake(function (err, data) {
-				console.log("wake");
-
-				after(200, function () {
-					my.ollie.setRGB(0x00FFFF);
-				});
-
-				after(500, function () {
-					my.ollie.setRGB(0xFF0000);
-					my.ollie.roll(60, 0, 1);
-
-					after(1000, function () {
-						my.ollie.roll(60, 90, 1);
-
-						after(1000, function () {
-							my.ollie.stop();
-						});
-					});
-				});
-			});
-		}
-	}).start();
+        work: function (my) {
+            my.bb8.devModeOn(function(err, dt) {
+                console.log("devModeOnBB8.devModeOn", err, dt);
+            });
+        }
+    }).start();
 }
 
 function testBB8() {
-	console.log("testBB8");
-	var Cylon = require('cylon');
+    console.log("testBB8", bb8UUID);
 
-	Cylon.robot({
-		connections: {
-			bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
-		},
+    Cylon.robot({
+        connections: {
+            bluetooth: {adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble'}
+        },
 
-		devices: {
-			bb8: { driver: 'bb8' }
-		},
+        devices: {
+            bb8: {driver: 'bb8'}
+        },
 
-		work: function (my) {
-			my.bb8.devModeOn(function (err, data) {
-				console.log("wake");
+        work: function (my) {
+            //_getCharacteristic
+            //_readServ
+            //devModeOn
+            my.bb8.devModeOn(function(wakeError, wakeData) {
+                console.log("wake", wakeError, wakeData);
+                my.bb8.roll(90,140,1, function(rollError, rollData) {
+                    console.log("roll", rollError, rollData);
+                    after((3).seconds(), function() {
+                        my.bb8.stop(function() {
+                            my.bb8._readServiceCharacteristic('22bb746f2bb075542d6f726568705327', '22bb746f2bbf75542d6f726568705327', function(err, data) {
+                                console.log("read",err,data.toJSON());
+                            });
+                        });
 
-				after(200, function () {
-					console.log("200ms: set color");
-					my.bb8.setRGB(0x00FFFF);
-				});
+                    });
 
-				after(500, function () {
-					console.log("200ms: set color and roll")
-					my.bb8.setRGB(0xFF0000);
-					my.bb8.roll(60, 0, 1);
+                });
+            });
 
-					after(1000, function () {
-						console.log("1000ms: roll")
-						my.bb8.roll(60, 90, 1);
+            /*
+            my.bb8.wake(function (err, data) {
+                console.log("wake", err, data);
+                after((5).seconds(), function() {
+                    my.bb8.roll(10, 10, 0, function(err2, dt2){
+                        console.log("after wake", err2,dt2);
+                    });
+                });
+            });
+            */
+        }
+    }).start();
+}
 
-						after(1000, function () {
-							console.log("1000ms: stop")
-							my.bb8.stop();
-						});
-					});
-				});
-			});
-		}
-	}).start();
+function test() {
+    console.log("test");
+    var sphero = require('sphero');
+    var ble = require("cylon-ble");
+    var central = ble.adaptor({uuid: bb8UUID});
+    console.log(central);
+    var orb = sphero(bb8UUID, {adaptor: central});
+    orb.connect(function () {
+        console.log("orb connected");
+        orb.color("magenta");
+        orb.disconnect(function () {
+            console.log("orb disconnected");
+        });
+    });
+
+    /*
+     var Cylon = require('cylon');
+
+     Cylon.config({
+     logging: {
+     level: 'debug'
+     }
+     });
+
+     Cylon.robot({
+     connections: {
+     bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
+     },
+
+     devices: {
+     sphero: { driver: 'sphero' }
+     },
+
+     work: function (my) {
+     my.sphero.wake(function (err, data) {
+     console.log("wake", err, data);
+
+     my.bb8._readServiceCharacteristic("22bb746f2bb075542d6f726568705327", "22bb746f2bb975542d6f726568705327", function (err,response) {
+     console.log(err,response);
+     });
+     });
+     }
+     }).start();
+     */
 }
 
 //getDeviceInfo();
@@ -272,4 +225,6 @@ function testBB8() {
 //connect();
 //testOllie();
 
+//devModeOnBB8();
 testBB8();
+//test();
