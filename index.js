@@ -141,14 +141,17 @@ function testBB8() {
             //_getCharacteristic
             //_readServ
             //devModeOn
+            /*
             my.bb8.devModeOn(function(wakeError, wakeData) {
                 console.log("wake", wakeError, wakeData);
-                my.bb8.roll(90,140,1, function(rollError, rollData) {
+                console.log(my.bb8);
+                my.bb8.setRGB(0x00ff00, function(rollError, rollData) {
                     console.log("roll", rollError, rollData);
                     after((3).seconds(), function() {
                         my.bb8.stop(function() {
-                            my.bb8._readServiceCharacteristic('22bb746f2bb075542d6f726568705327', '22bb746f2bbf75542d6f726568705327', function(err, data) {
-                                console.log("read",err,data.toJSON());
+                            my.bb8.wake(function(err, data) {
+                                console.log("wake",err,data);
+                                process.exit(0);
                             });
                         });
 
@@ -156,17 +159,22 @@ function testBB8() {
 
                 });
             });
-
-            /*
-            my.bb8.wake(function (err, data) {
-                console.log("wake", err, data);
-                after((5).seconds(), function() {
-                    my.bb8.roll(10, 10, 0, function(err2, dt2){
-                        console.log("after wake", err2,dt2);
-                    });
-                });
-            });
             */
+
+            my.bb8.devModeOn(function (wakeError) {
+                console.log("wake", wakeError);
+                    my.bb8.setRGB(0xFF0000);
+                    setTimeout(function() {
+                        console.log("get BTInfo");
+                        my.bb8.getBluetoothInfo(function(btError, btData) {
+                            console.log("btInfo", btError, btData);
+                        });
+                    }, 5000);
+                    setTimeout(function() {
+                        console.log("\texiting...");
+                        process.exit(0);
+                    }, 10000);
+            });
         }
     }).start();
 }

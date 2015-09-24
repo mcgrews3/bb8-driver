@@ -15,7 +15,6 @@
     "cylon-ollie": "^0.5.0",
     "cylon-sphero": "^0.21.0",
     "hybridgroup-spheron": "^0.3.0",
-    "node-sphero": "0.0.7",
     "sphero": "^0.3.0"
   }
 }
