@@ -135,11 +135,9 @@ function test() {
 
         work: function (my) {
 
-            var obx = my.bb8.connection.connectedPeripherals['3d83fa5f2fa943cc811c2907c050f9d0'].peripheral;
+            var obx = my.bb8.connection.connectedPeripherals[bb8UUID].peripheral;
             obx = my.bb8.connection;
             //ROBOT_SERVICE
-
-            console.log("my.bb8", my.bb8);
 
             //my.bb8.discoverServices([], function(discoverError, discoverServices) {
             //   console.log(chalk.green("discoverServices", discoverError, discoverServices));
@@ -149,22 +147,22 @@ function test() {
                 console.log("roll", rollError);
             };
 
-            obx.on("connect", function (err, data) {
-                console.log(chalk.yellow("connect", err, data));
+            obx.on("connect", function (err) {
+                console.log(chalk.yellow("connect", err));
             });
 
-            obx.on("disconnect", function (err, data) {
-                console.log(chalk.yellow("disconnect", err, data));
+            obx.on("disconnect", function (err) {
+                console.log(chalk.yellow("disconnect", err));
             });
 
             my.bb8.devModeOn(function (wakeError) {
                 console.log("wake", wakeError);
 
-                setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, rollFn); }, 5000);
-                setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, rollFn); }, 10000);
+                setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, 0, rollFn); }, 5000);
+                setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, 0, rollFn); }, 10000);
 
-                my.bb8.roll(80, 80, 0, function (rollError, rollData) {
-                    console.log("roll", rollError, rollData);
+                my.bb8.roll(180, 80, 1, function (rollError) {
+                    console.log("roll", rollError);
 
                 });
             });
