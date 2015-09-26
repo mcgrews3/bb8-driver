@@ -134,26 +134,11 @@ function test() {
         },
 
         work: function (my) {
-
-            var obx = my.bb8.connection.connectedPeripherals[bb8UUID].peripheral;
-            obx = my.bb8.connection;
-            //ROBOT_SERVICE
-
-            //my.bb8.discoverServices([], function(discoverError, discoverServices) {
-            //   console.log(chalk.green("discoverServices", discoverError, discoverServices));
-            //});
-
             var rollFn = function(rollError) {
-                console.log("roll", rollError);
+                if (rollError) {
+                    console.log("roll", rollError);
+                }
             };
-
-            obx.on("connect", function (err) {
-                console.log(chalk.yellow("connect", err));
-            });
-
-            obx.on("disconnect", function (err) {
-                console.log(chalk.yellow("disconnect", err));
-            });
 
             my.bb8.devModeOn(function (wakeError) {
                 console.log("wake", wakeError);
@@ -161,10 +146,7 @@ function test() {
                 setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, 0, rollFn); }, 5000);
                 setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, 0, rollFn); }, 10000);
 
-                my.bb8.roll(180, 80, 1, function (rollError) {
-                    console.log("roll", rollError);
-
-                });
+                my.bb8.roll(180, 80, 1, rollFn);
             });
 
             setTimeout(function () {
@@ -172,17 +154,6 @@ function test() {
                 console.log("exiting...");
                 process.exit(0);
             },15000);
-
-            /*
-             my.bb8.devModeOn(function (wakeError) {
-             console.log("wake", wakeError);
-             my.bb8.setRGB(0xFF0000);
-             setTimeout(function () {
-             console.log("\texiting...");
-             process.exit(0);
-             }, 10000);
-             });
-             */
         }
     }).start();
 }
