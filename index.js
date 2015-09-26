@@ -1,25 +1,40 @@
 //Hiding my GUID's in cause anyone out there is within 30 meters ...
+
+/*** IMPORT ***/
+
+var chalk = require("chalk");
+var cylonBLE = require('cylon-ble');
+var Cylon = require('cylon');
+
 var datajson = require('./data.json');
 var bb8UUID = datajson.devices.bb8;
 
 var ROBOT_SERVICE = '22bb746f2ba075542d6f726568705327';
 var ROBOT_CHAR_COMMAND = '22bb746f2ba175542d6f726568705327';
+var ROBOT_CHAR_NOTIFY = '22bb746f2ba675542d6f726568705327';
 
-var chalk = require("chalk");
-var cylonBLE = require('cylon-ble');
-var Cylon = require('cylon');
+var BLE_RADIO_SERVICE = '22bb746f2bb075542d6f726568705327';
+var BLE_RADIO_CHAR_RSSI = '22bb746f2bb675542d6f726568705327';
+
+var DEVICE_INFO_SERVICE = '180a';
+var DVC_INFO_CHAR_MANUFACTURER = '2a29';
+
+/*** CONFIGURE ***/
+
 Cylon.config({
     logging: {
         level: 'debug'
     }
 });
 
+/*** BLUETOOTH FUNCTIONS ***/
+
 function discoverRobots() {
     Cylon.robot({
         connections: {
             bluetooth: {
                 adaptor: 'central',
-                module: __dirname + '/node_modules/cylon-ble'
+                module: 'cylon-ble'
             }
         },
 
@@ -30,9 +45,9 @@ function discoverRobots() {
                 peripherals[peripheral.uuid] = peripheral;
             });
 
-            console.log("Just listening for BLE peripherals, one moment...");
+            console.log("Listening for BLE peripherals, one moment...");
 
-            every((5).seconds(), function () {
+            every((10).seconds(), function () {
                 console.log("Known Bluetooth Peripherals:");
                 console.log("Name    | UUID                             | RSSI");
                 console.log("------- | -------------------------------- | ----");
@@ -65,8 +80,8 @@ function readCharacteristic() {
         devices: {
             wiced: {
                 driver: "ble-characteristic",
-                serviceId: '22bb746f2bb075542d6f726568705327',
-                characteristicId: '22bb746f2bb075542d6f726568705327',
+                serviceId: DEVICE_INFO_SERVICE,
+                characteristicId: DVC_INFO_CHAR_MANUFACTURER,
                 connection: "bluetooth"
             }
         },
@@ -76,41 +91,15 @@ function readCharacteristic() {
                 if (err) {
                     return console.error("Error: ", err);
                 }
-                console.log("Data: ", data);
+                console.log("Data: ", data.toString('utf-8'));
             });
         }
     }).start();
 }
 
-function genericAccess() {
-    Cylon.robot({
-        connections: {
-            bluetooth: {
-                adaptor: "central",
-                uuid: bb8UUID,
-                module: "cylon-ble"
-            }
-        },
+/*** TEST BB8 METHODS ***/
 
-        devices: {
-            generic: {
-                driver: "ble-generic-access"
-            }
-        },
-
-        work: function (my) {
-            console.log(my);
-            my.generic.getDeviceName(function (err, data) {
-                if (err) {
-                    return console.error("Error: ", err);
-                }
-                console.log("Name: ", data);
-            });
-        }
-    }).start();
-}
-
-function devModeOnBB8() {
+function devModeOnBB8(callback) {
     console.log("devModeOnBB8");
     Cylon.robot({
         connections: {
@@ -124,6 +113,9 @@ function devModeOnBB8() {
         work: function (my) {
             my.bb8.devModeOn(function (err, dt) {
                 console.log("devModeOnBB8.devModeOn", err, dt);
+                if (callback) {
+                    callback();
+                }
             });
         }
     }).start();
@@ -243,14 +235,9 @@ function test() {
      */
 }
 
-//getDeviceInfo();
-//genericAccess();
-//readCharacteristic();
-//discoverRobots();
-//roll();
-//connect();
-//testOllie();
 
-//devModeOnBB8();
-testBB8();
+/*** INIT ***/
+
+devModeOnBB8();
+//testBB8();
 //test();
