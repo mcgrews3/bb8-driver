@@ -121,7 +121,7 @@ function devModeOnBB8(callback) {
     }).start();
 }
 
-function testBB8() {
+function test() {
     console.log("testBB8", bb8UUID);
 
     Cylon.robot({
@@ -189,55 +189,6 @@ function testBB8() {
     }).start();
 }
 
-function test() {
-    console.log("test");
-    var sphero = require('sphero');
-    var ble = require("cylon-ble");
-    var central = ble.adaptor({uuid: bb8UUID});
-    console.log(central);
-    var orb = sphero(bb8UUID, {adaptor: central});
-    orb.connect(function () {
-        console.log("orb connected");
-        orb.color("magenta");
-        orb.disconnect(function () {
-            console.log("orb disconnected");
-        });
-    });
-
-    /*
-     var Cylon = require('cylon');
-
-     Cylon.config({
-     logging: {
-     level: 'debug'
-     }
-     });
-
-     Cylon.robot({
-     connections: {
-     bluetooth: { adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble' }
-     },
-
-     devices: {
-     sphero: { driver: 'sphero' }
-     },
-
-     work: function (my) {
-     my.sphero.wake(function (err, data) {
-     console.log("wake", err, data);
-
-     my.bb8._readServiceCharacteristic("22bb746f2bb075542d6f726568705327", "22bb746f2bb975542d6f726568705327", function (err,response) {
-     console.log(err,response);
-     });
-     });
-     }
-     }).start();
-     */
-}
-
-
 /*** INIT ***/
 
-devModeOnBB8();
-//testBB8();
-//test();
+test();
