@@ -2,6 +2,10 @@
 var datajson = require('./data.json');
 var bb8UUID = datajson.devices.bb8;
 
+var ROBOT_SERVICE = '22bb746f2ba075542d6f726568705327';
+var ROBOT_CHAR_COMMAND = '22bb746f2ba175542d6f726568705327';
+
+var chalk = require("chalk");
 var cylonBLE = require('cylon-ble');
 var Cylon = require('cylon');
 Cylon.config({
@@ -118,7 +122,7 @@ function devModeOnBB8() {
         },
 
         work: function (my) {
-            my.bb8.devModeOn(function(err, dt) {
+            my.bb8.devModeOn(function (err, dt) {
                 console.log("devModeOnBB8.devModeOn", err, dt);
             });
         }
@@ -138,43 +142,57 @@ function testBB8() {
         },
 
         work: function (my) {
-            //_getCharacteristic
-            //_readServ
-            //devModeOn
-            /*
-            my.bb8.devModeOn(function(wakeError, wakeData) {
-                console.log("wake", wakeError, wakeData);
-                console.log(my.bb8);
-                my.bb8.setRGB(0x00ff00, function(rollError, rollData) {
-                    console.log("roll", rollError, rollData);
-                    after((3).seconds(), function() {
-                        my.bb8.stop(function() {
-                            my.bb8.wake(function(err, data) {
-                                console.log("wake",err,data);
-                                process.exit(0);
-                            });
-                        });
 
-                    });
+            var obx = my.bb8.connection.connectedPeripherals['3d83fa5f2fa943cc811c2907c050f9d0'].peripheral;
+            obx = my.bb8.connection;
+            //ROBOT_SERVICE
 
-                });
+            console.log("my.bb8", my.bb8);
+
+            //my.bb8.discoverServices([], function(discoverError, discoverServices) {
+            //   console.log(chalk.green("discoverServices", discoverError, discoverServices));
+            //});
+
+            var rollFn = function(rollError) {
+                console.log("roll", rollError);
+            };
+
+            obx.on("connect", function (err, data) {
+                console.log(chalk.yellow("connect", err, data));
             });
-            */
+
+            obx.on("disconnect", function (err, data) {
+                console.log(chalk.yellow("disconnect", err, data));
+            });
 
             my.bb8.devModeOn(function (wakeError) {
                 console.log("wake", wakeError);
-                    my.bb8.setRGB(0xFF0000);
-                    setTimeout(function() {
-                        console.log("get BTInfo");
-                        my.bb8.getBluetoothInfo(function(btError, btData) {
-                            console.log("btInfo", btError, btData);
-                        });
-                    }, 5000);
-                    setTimeout(function() {
-                        console.log("\texiting...");
-                        process.exit(0);
-                    }, 10000);
+
+                setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, rollFn); }, 5000);
+                setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, rollFn); }, 10000);
+
+                my.bb8.roll(80, 80, 0, function (rollError, rollData) {
+                    console.log("roll", rollError, rollData);
+
+                });
             });
+
+            setTimeout(function () {
+                my.bb8.stop();
+                console.log("exiting...");
+                process.exit(0);
+            },15000);
+
+            /*
+             my.bb8.devModeOn(function (wakeError) {
+             console.log("wake", wakeError);
+             my.bb8.setRGB(0xFF0000);
+             setTimeout(function () {
+             console.log("\texiting...");
+             process.exit(0);
+             }, 10000);
+             });
+             */
         }
     }).start();
 }

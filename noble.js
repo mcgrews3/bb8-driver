@@ -46,9 +46,43 @@ noble.on('discover', function(peripheral) {
 
         console.log();
 
-        explore(peripheral);
+        //explore(peripheral);
+        test(peripheral);
     }
 });
+
+function test(peripheral) {
+    console.log("test");
+
+    peripheral.on('disconnect', function() {
+        process.exit(0);
+    });
+
+    peripheral.connect(function(error) {
+        console.log("connected");
+
+        peripheral.discoverServices(["22bb746f2ba075542d6f726568705327"], function(error, services) {
+            var serviceIndex = 0;
+
+            for (var i = 0, j = services.length; i < j; i++) {
+                var service = services[i];
+                var serviceInfo = service.uuid;
+
+                if (service.name) {
+                    serviceInfo += ' (' + service.name + ')';
+                }
+                console.log(serviceInfo,"\n");
+
+                service.discoverCharacteristics([], function(error, characteristics) {
+                    console.log(characteristics);
+                    console.log("disconnecting...");
+                    peripheral.disconnect();
+                });
+            }
+
+        });
+    });
+}
 
 function explore(peripheral) {
     console.log('services and characteristics:');
@@ -58,6 +92,9 @@ function explore(peripheral) {
     });
 
     peripheral.connect(function(error) {
+        console.log("connected");
+
+
         peripheral.discoverServices([], function(error, services) {
             var serviceIndex = 0;
 

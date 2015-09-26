@@ -27,7 +27,7 @@ peripheral with UUID  found
 
 services and characteristics:
 
-22bb746f 2ba075542d6f7265 68705327 -    //2ba0  ?Robot Control Service
+22bb746f2ba075542d6f726568705327 -    //2ba0  ?Robot Control Service
   22bb746f2ba175542d6f726568705327    //2ba1  Command
     properties  writeWithoutResponse, write   
   22bb746f2ba675542d6f726568705327    //2ba6  Response
