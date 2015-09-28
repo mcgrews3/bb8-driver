@@ -126,7 +126,7 @@ function test() {
 
     Cylon.robot({
         connections: {
-            bluetooth: {adaptor: 'central', uuid: bb8UUID, module: 'cylon-ble'}
+            bluetooth: {adaptor: 'bb8', uuid: bb8UUID, module: 'cylon-bb8'}
         },
 
         devices: {
@@ -134,19 +134,33 @@ function test() {
         },
 
         work: function (my) {
-            var rollFn = function(rollError) {
-                if (rollError) {
-                    console.log("roll", rollError);
+            var callbackFn = function(cbError) {
+                if (cbError) {
+                    console.log("callbackFn", cbError);
                 }
             };
 
             my.bb8.devModeOn(function (wakeError) {
                 console.log("wake", wakeError);
 
-                setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, 0, rollFn); }, 5000);
-                setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, 0, rollFn); }, 10000);
+                setTimeout(function() {
+                    console.log("timeout.2500");
+                    my.bb8.getDeviceMode(function(dvcModeError) {
+                       console.log("getDeviceMode", dvcModeError);
+                    });
+                }, 2500);
 
-                my.bb8.roll(180, 80, 1, rollFn);
+                setTimeout(function() {
+                    console.log("timeout.7500");
+                    my.bb8.getRGB(function(dvcModeError) {
+                        console.log("getRGB", dvcModeError);
+                    });
+                }, 7500);
+
+                setTimeout(function() { console.log("red.color");  my.bb8.setRGB(0xFF0000, 0, callbackFn); }, 5000);
+                setTimeout(function() { console.log("cyan.color"); my.bb8.setRGB(0x00FFFF, 0, callbackFn); }, 10000);
+
+                //my.bb8.roll(180, 80, 1, rollFn);
             });
 
             setTimeout(function () {

@@ -2,6 +2,7 @@ var async = require('async');
 var noble = require('noble');
 var datajson = require('./data.json');
 var peripheralId = datajson.devices.bb8;
+var chalk = require("chalk");
 
 noble.on('stateChange', function(state) {
     if (state === 'poweredOn') {
@@ -46,8 +47,8 @@ noble.on('discover', function(peripheral) {
 
         console.log();
 
-        //explore(peripheral);
-        test(peripheral);
+        explore(peripheral);
+        //test(peripheral);
     }
 });
 

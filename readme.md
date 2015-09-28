@@ -16,6 +16,11 @@
 
 ### Cylon-ble
 
+### BLE
+
+* [Notifications w/Noble](https://labs.hybris.com/2014/10/06/connecting-to-multiple-ble-devices/)
+
+
 #### info
 
 peripheral with UUID  found
